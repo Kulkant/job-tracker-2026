@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 
 export const protect = (req, res, next) => {
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -11,17 +12,19 @@ export const protect = (req, res, next) => {
 
       const payload = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = payload.userId;
+      req.user = payload.userId; // string (user id)
 
       next();
     } catch (error) {
-      return res
-        .status(500)
-        .json({ success: false, message: "No authorized - invalid token" });
+      return res.status(401).json({
+        success: false,
+        message: "Not authorized - invalid token",
+      });
     }
   } else {
-    return res
-      .status(500)
-      .json({ success: false, message: "Not authorized - no token" });
+    return res.status(401).json({
+      success: false,
+      message: "Not authorized - no token",
+    });
   }
 };

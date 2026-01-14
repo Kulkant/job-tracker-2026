@@ -6,7 +6,7 @@ export const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if ((!name, !email, !password)) {
+    if (!name || !email || !password) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required" });
@@ -56,14 +56,14 @@ export const login = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ success: false, maessage: "Invalid credentails" });
+        .json({ success: false, maessage: "Invalid credentials" });
     }
 
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
       return res
-        .staus(400)
+        .stauts(400)
         .json({ success: false, message: "Invalid Credentials" });
     }
 

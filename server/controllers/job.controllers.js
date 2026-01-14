@@ -12,19 +12,13 @@ export const createJob = async (req, res) => {
       status,
     });
 
-    console.log(job.createdBy);
-
     res.status(201).json({
       success: true,
       message: "Job created successfully",
-      job: {
-        createdBy: job.createdBy,
-        company: job.company,
-        role: job.role,
-        status: job.status,
-      },
+      job,
     });
   } catch (error) {
+    console.error("CREATE JOB ERROR:", error); // <--- important
     return res.status(500).json({
       success: false,
       message: "Job creation failed",
@@ -52,29 +46,29 @@ export const getAllJobs = async (req, res) => {
 
 export const updateJob = async (req, res) => {
   try {
-    const job = await Job.findByIdAndUpdate(req.params.id);
+    const job = await Job.findById(req.params.id);
 
     if (!job) {
-      return res
-        .status(404)
-        .json({ message: "Job doesn't exist. Please provide corret Id" });
+      return res.status(404).json({ message: "Job doesn't exist" });
     }
 
-    if (job.createdBy.toString() !== req.user) {
-      return res
-        .status(401)
-        .status({ success: false, message: "Not authorized" });
+    if (job.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ message: "Not authorized" });
     }
 
-    const newJob = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     });
 
-    res.status(200).json({ success: true, message: "Job updated", newJob });
+    res.status(200).json({
+      success: true,
+      message: "Job updated",
+      job: updatedJob,
+    });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
-      message: "Job updation failed",
+      message: "Job update failed",
       error: error.message,
     });
   }
@@ -89,7 +83,7 @@ export const deleteJob = async (req, res) => {
         .json({ message: "Job doesn't exist. Please provide corret Id" });
     }
 
-    if (job.createdBy.toString() !== req.user) {
+    if (job.createdBy.toString() !== req.user._id.toString()) {
       return res
         .status(401)
         .status({ success: false, message: "Not authorized" });
