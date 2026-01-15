@@ -1,8 +1,10 @@
 import Job from "../model/job.model.js";
+import mongoose from "mongoose";
+import moment from "moment";
 
 export const createJob = async (req, res) => {
   try {
-    req.body.createdBy = req.user;
+    req.body.createdBy = req.user._id;
     const { company, role, status, createdBy } = req.body;
 
     const job = await Job.create({
@@ -18,18 +20,16 @@ export const createJob = async (req, res) => {
       job,
     });
   } catch (error) {
-    console.error("CREATE JOB ERROR:", error); // <--- important
     return res.status(500).json({
       success: false,
       message: "Job creation failed",
-      error: error.message,
     });
   }
 };
 
 export const getAllJobs = async (req, res) => {
   try {
-    const jobs = await Job.find({ createdBy: req.user });
+    const jobs = await Job.find({ createdBy: req.user._id });
     res.status(200).json({
       success: true,
       message: "All jobs fetched",
@@ -76,7 +76,7 @@ export const updateJob = async (req, res) => {
 
 export const deleteJob = async (req, res) => {
   try {
-    const job = await Job.findByIdAndDelete(req.params.id);
+    const job = await Job.findById(req.params.id);
     if (!job) {
       return res
         .status(404)
@@ -86,15 +86,76 @@ export const deleteJob = async (req, res) => {
     if (job.createdBy.toString() !== req.user._id.toString()) {
       return res
         .status(401)
-        .status({ success: false, message: "Not authorized" });
+        .json({ success: false, message: "Not authorized" });
     }
 
-    res.status(200).json({ success: false, message: "Job deleted" });
+    await Job.findByIdAndDelete(req.params.id);
+
+    res.status(200).json({ success: true, message: "Job deleted" });
   } catch (error) {
     return res.status(500).json({
       success: false,
       message: "Job deletiion failed",
       error: error.message,
     });
+  }
+};
+
+export const showStats = async (req, res) => {
+  try {
+    const stats = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user._id) } },
+      { $group: { _id: `$status`, count: { $sum: 1 } } },
+    ]);
+
+    const objectStats = stats.reduce((acc, curr) => {
+      const { _id: title, count } = curr;
+      acc[title] = count;
+
+      return acc;
+    }, {});
+
+    const defaultStats = {
+      applied: objectStats.Applied || 0,
+      interview: objectStats.Interview || 0,
+      offer: objectStats.Offer || 0,
+      declined: objectStats.Declined || 0,
+    };
+
+    let monthlyApplications = await Job.aggregate([
+      { $match: { createdBy: new mongoose.Types.ObjectId(req.user._id) } },
+      {
+        $group: {
+          _id: {
+            year: { $year: `$createdAt` },
+            month: { $month: `$createdAt` },
+          },
+          count: { $sum: 1 },
+        },
+      },
+      { $sort: { "_id.year": -1, "_id.month": -1 } },
+      { $limit: 6 }, //last six months only
+    ]);
+
+    //format for frontend (e.g. "Jan 2026")
+    monthlyApplications = monthlyApplications
+      .map((item) => {
+        const {
+          _id: { year, month },
+          count,
+        } = item;
+
+        const date = moment()
+          .month(month - 1)
+          .year(year)
+          .format(`MMM Y`);
+
+        return { date, count };
+      })
+      .reverse(); //show oldest to newest chart
+
+    res.status(200).json({ defaultStats, monthlyApplications });
+  } catch (error) {
+    return res.status(500).json({ message: `Sever Error` });
   }
 };

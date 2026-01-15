@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Form, Button, Toast } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeField, clearValues } from "../../features/slices/jobSlice.js";
 import { createJob } from "../../features/slices/jobSlice.js";
+import { clearEditJob, updateJob } from "../../features/slices/allJobsSlice.js";
 const AddJob = () => {
   const dispatch = useDispatch();
+  const [show, setShow] = useState(false);
+
   const { company, role, status, statusOptions, isSuccess } = useSelector(
     (state) => state.job
   );
+
+  const { isEditing, editJobData } = useSelector((state) => state.allJobs);
+
+  useEffect(() => {
+    if (isEditing && editJobData) {
+      dispatch(changeField({ name: "company", value: editJobData.company }));
+      dispatch(changeField({ name: "role", value: editJobData.role }));
+      dispatch(changeField({ name: "status", value: editJobData.status }));
+    }
+  }, [isEditing, editJobData, dispatch]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     dispatch(changeField({ name, value }));
@@ -17,12 +31,15 @@ const AddJob = () => {
 
     console.log({ company, role, status });
     const jobData = { company, role, status };
-    dispatch(createJob(jobData));
+    if (isEditing && editJobData?._id) {
+      dispatch(updateJob({ jobId: editJobData._id, jobData }));
+      dispatch(clearEditJob()); //reset editing job
+    } else {
+      dispatch(createJob(jobData));
+    }
     dispatch(clearValues());
     setShow(true);
   };
-
-  const [show, setShow] = useState(false);
 
   return (
     <>
@@ -66,7 +83,7 @@ const AddJob = () => {
         </Form.Group>
 
         <Button variant="success" type="submit">
-          Add Job
+          {isEditing ? "Update Job" : "Add Job"}
         </Button>
       </Form>
       {isSuccess && (
