@@ -36,6 +36,7 @@ const AddJob = () => {
       dispatch(clearEditJob()); //reset editing job
     } else {
       dispatch(createJob(jobData));
+      dispatch(clearValues());
     }
     dispatch(clearValues());
     setShow(true);
