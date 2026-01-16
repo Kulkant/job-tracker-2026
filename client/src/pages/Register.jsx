@@ -51,6 +51,21 @@ const Register = () => {
 
           <Form onSubmit={handleSubmit} id="form">
             {!isMember && (
+              <Button
+                onClick={() => {
+                  dispatch(
+                    loginUser({
+                      email: "demo@example.com",
+                      password: "kshamrma9883",
+                    })
+                  );
+                }}
+                className="btn btn-block btn-hipster"
+              >
+                Explore Demo App
+              </Button>
+            )}
+            {!isMember && (
               <Form.Group className="mb-3">
                 <Form.Label>Name</Form.Label>
                 <Form.Control

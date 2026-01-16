@@ -68,7 +68,7 @@ export const login = async (req, res) => {
 
     if (!isPasswordMatch) {
       return res
-        .stauts(400)
+        .status(400)
         .json({ success: false, message: "Invalid Credentials" });
     }
 

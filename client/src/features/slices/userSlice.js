@@ -22,6 +22,7 @@ export const loginUser = createAsyncThunk(
       const { data } = await customFetch.post("/auth/login", userData);
       return data;
     } catch (error) {
+      console.log(error);
       return rejectWithValue(error?.response?.data?.message || error.message);
     }
   }
