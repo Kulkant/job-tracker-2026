@@ -27,6 +27,28 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+//update user
+export const updateUser = createAsyncThunk(
+  "user/updateUser",
+  async (updatedUserData, { rejectWithValue }) => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const { data } = await axios.patch(
+        "/api/v1/auth/update",
+        updatedUserData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return data.user;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data?.message);
+    }
+  }
+);
+
 // Initial state
 const initialState = {
   user: JSON.parse(localStorage.getItem("user")) || null,
@@ -35,6 +57,12 @@ const initialState = {
   isError: false,
   isSuccess: false,
   message: "",
+  isUpdating: false,
+  isUpdateSuccess: false,
+  profileForm: {
+    name: "",
+    email: "",
+  },
 };
 
 const userSlice = createSlice({
@@ -52,6 +80,18 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.message = "";
+    },
+    changeField: (state, action) => {
+      const { name, value } = action.payload;
+      state.profileForm[name] = value;
+    },
+    setProfileFormFromUser: (state) => {
+      if (state.user) {
+        state.profileForm = {
+          name: state.user.name || "",
+          email: state.user.email || "",
+        };
+      }
     },
   },
   extraReducers: (builder) => {
@@ -89,9 +129,29 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
+      })
+      .addCase(updateUser.pending, (state) => {
+        state.isUpdating = true;
+        state.message = null;
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.isUpdating = false;
+        state.user = action.payload;
+        state.profileForm = {
+          name: action.payload.name,
+          email: action.payload.email,
+        };
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        state.isUpdateSuccess = true;
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.isUpdating = false;
+        state.message = action.payload;
+        state.isUpdateSuccess = false;
       });
   },
 });
 
-export const { logout, reset } = userSlice.actions;
+export const { logout, reset, changeField, setProfileFormFromUser } =
+  userSlice.actions;
 export default userSlice.reducer;

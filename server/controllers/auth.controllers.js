@@ -86,3 +86,41 @@ export const login = async (req, res) => {
       .json({ success: false, message: "Login failed", error: error.message });
   }
 };
+
+export const updateUser = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+
+    if (!name || !email) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Name and Email both required" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        name,
+        email,
+      },
+      { new: true }
+    );
+
+    console.log(updatedUser);
+
+    res.status(200).json({
+      success: true,
+      message: "User updation Successfull",
+      user: {
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "User updation falied",
+      error: error.message,
+    });
+  }
+};

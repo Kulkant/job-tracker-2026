@@ -16,12 +16,11 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-const PORT = process.env.PORT || 5000;
-
 app.use("/api/v1/auth", authRoutes);
 
 app.use("/api/v1/jobs", jobRoutes);
 
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running at port: ${PORT}`);
 });
