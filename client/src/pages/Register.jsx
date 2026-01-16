@@ -21,11 +21,14 @@ const Register = () => {
 
     if (!isMember) {
       dispatch(registerUser(currentUser));
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 200);
     } else {
       dispatch(loginUser(currentUser));
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1000);
+      }, 200);
     }
   };
 
