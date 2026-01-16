@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import customFetch from "../../utils/axios";
 
 // Register user
 export const registerUser = createAsyncThunk(
   "user/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post("/api/v1/auth/register", userData);
+      const { data } = await customFetch.post("/auth/register", userData);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || error.message);
@@ -19,7 +19,7 @@ export const loginUser = createAsyncThunk(
   "user/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post("/api/v1/auth/login", userData);
+      const { data } = await customFetch.post("/auth/login", userData);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || error.message);
@@ -34,8 +34,8 @@ export const updateUser = createAsyncThunk(
     const token = localStorage.getItem("token");
 
     try {
-      const { data } = await axios.patch(
-        "/api/v1/auth/update",
+      const { data } = await customFetch.patch(
+        "/auth/update",
         updatedUserData,
         {
           headers: { Authorization: `Bearer ${token}` },

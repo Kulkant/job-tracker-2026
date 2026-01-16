@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
+import customFetch from "../../utils/axios";
 // Create a job
 export const createJob = createAsyncThunk(
   "job/createJob",
@@ -9,7 +8,7 @@ export const createJob = createAsyncThunk(
       const { token } = getState().user; // read token from Redux
       if (!token) throw new Error("No token found");
 
-      const { data } = await axios.post("/api/v1/jobs", jobData, {
+      const { data } = await customFetch.post("/jobs", jobData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

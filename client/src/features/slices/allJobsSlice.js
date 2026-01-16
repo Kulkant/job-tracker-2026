@@ -1,12 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import customFetch from "../../utils/axios";
 
 export const getAllJobs = createAsyncThunk(
   "allJobs/getAllJobs",
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("/api/v1/jobs", {
+      const { data } = await customFetch.get("/jobs", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -23,7 +23,7 @@ export const deleteJob = createAsyncThunk(
   async (jobId, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.delete(`/api/v1/jobs/${jobId}`, {
+      const { data } = await customFetch.delete(`/jobs/${jobId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return jobId;
@@ -38,7 +38,7 @@ export const updateJob = createAsyncThunk(
   async ({ jobData, jobId }, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.patch(`/api/v1/jobs/${jobId}`, jobData, {
+      const { data } = await customFetch.patch(`/jobs/${jobId}`, jobData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return data.job;
@@ -53,7 +53,7 @@ export const getStats = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("token");
-      const { data } = await axios.get("/api/v1/jobs/stats", {
+      const { data } = await customFetch.get("/jobs/stats", {
         headers: { Authorization: `Bearer ${token}` },
       });
       return data;
