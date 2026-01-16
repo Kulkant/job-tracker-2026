@@ -56,11 +56,14 @@ const Register = () => {
                   dispatch(
                     loginUser({
                       email: "demo@example.com",
-                      password: "kshamrma9883",
+                      password: "ksharma9883",
                     })
                   );
+                  setTimeout(() => {
+                    navigate("/dashboard");
+                  }, 200);
                 }}
-                className="btn btn-block btn-hipster"
+                className="btn btn-block btn-hipster mb-4"
               >
                 Explore Demo App
               </Button>
