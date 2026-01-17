@@ -6,7 +6,7 @@
 
 **[Launch Jobster](https://job-tracker-2026.vercel.app)**
 
-- **Test Account:** `demo@examople.com` / `ksharma9883` _(Create a dummy account so recruiters can log in easily!)_
+- **Test Account:** `demo@examople.com` / `ksharma9883`
 
 ---
 
@@ -17,7 +17,7 @@ Searching for a job is chaotic. Using spreadsheets to track hundreds of applicat
 
 ## ✨ Key Features
 
-- **📊 Advanced Analytics:** Visualizes application status (Interview, Declined, Pending) using **Recharts**.
+- **📊 Advanced Analytics:** Visualizes application status (Applied , Interview , Declined , Offer) using **Recharts**.
 - **⚡ High-Performance Stats:** Utilizes **MongoDB Aggregation Pipelines** to calculate stats on the server-side, reducing frontend payload.
 - **🔐 Secure Authentication:** Complete JWT-based auth flow with HTTP-only cookies and protected routes.
 - **📱 Responsive Dashboard:** Built with React & Styled Components for a seamless mobile and desktop experience.
@@ -46,7 +46,7 @@ await Job.aggregate([
 
 **Clone the repo** :
 
-- git clone [https://github.com/Kulkant/jobster.git](https://github.com/Kulkant/jobster.git)
+- git clone [https://github.com/Kulkant/job-tracker-2026.git](https://github.com/Kulkant/job-tracker-2026.git)
 - cd jobster
 - Install Dependencies
   -npm run setup-project
@@ -65,8 +65,4 @@ npm start
 
 ## 👤 Author
 
-Kulkant Sharma
-
-[Linkedin](www.linkedin.com/in/kulkant-sharma-b178a8393)
-
-[Github](https://github.com/Kulkant)
+Kulkant Sharma | [Linkedin](www.linkedin.com/in/kulkant-sharma-b178a8393)| [Github](https://github.com/Kulkant)
