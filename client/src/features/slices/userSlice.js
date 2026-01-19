@@ -11,7 +11,7 @@ export const registerUser = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 // Login user
@@ -22,10 +22,9 @@ export const loginUser = createAsyncThunk(
       const { data } = await customFetch.post("/auth/login", userData);
       return data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error?.response?.data?.message || error.message);
     }
-  }
+  },
 );
 
 //update user
@@ -40,14 +39,13 @@ export const updateUser = createAsyncThunk(
         updatedUserData,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
       return data.user;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error?.response?.data?.message);
     }
-  }
+  },
 );
 
 // Initial state

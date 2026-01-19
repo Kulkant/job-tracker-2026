@@ -101,6 +101,10 @@ export const deleteJob = async (req, res) => {
   }
 };
 
+//AGGREGATION PIPELINE:
+// We group jobs by status to calculate the stats server-side
+// This reduces the paylod sent to the server (Performance Organization)
+
 export const showStats = async (req, res) => {
   try {
     const stats = await Job.aggregate([

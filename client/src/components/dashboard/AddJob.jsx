@@ -9,7 +9,7 @@ const AddJob = () => {
   const [show, setShow] = useState(false);
 
   const { company, role, status, statusOptions, isSuccess } = useSelector(
-    (state) => state.job
+    (state) => state.job,
   );
 
   const { isEditing, editJobData } = useSelector((state) => state.allJobs);
@@ -29,7 +29,6 @@ const AddJob = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log({ company, role, status });
     const jobData = { company, role, status };
     if (isEditing && editJobData?._id) {
       dispatch(updateJob({ jobId: editJobData._id, jobData }));
