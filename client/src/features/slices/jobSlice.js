@@ -18,7 +18,7 @@ export const createJob = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message || error?.message);
     }
-  }
+  },
 );
 
 const jobSlice = createSlice({
@@ -28,6 +28,9 @@ const jobSlice = createSlice({
     role: "",
     status: "Applied",
     statusOptions: ["Applied", "Interview", "Offer", "Rejected"],
+    jobDescription: "",
+    salary: "",
+    location: "Remote",
     isLoading: false,
     error: "",
     isSuccess: false,
@@ -37,6 +40,10 @@ const jobSlice = createSlice({
       state.company = "";
       state.role = "";
       state.status = "Applied";
+      state.jobDescription = "";
+      state.location = "Remote";
+      state.salary = "";
+      state.isSuccess = false;
     },
     changeField: (state, action) => {
       const { name, value } = action.payload;
@@ -51,10 +58,16 @@ const jobSlice = createSlice({
       })
       .addCase(createJob.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.company = action.payload.job.company;
-        state.role = action.payload.job.role;
-        state.status = action.payload.job.status;
         state.isSuccess = true;
+
+        const job = action.payload.job;
+
+        state.company = job.company;
+        state.role = job.role;
+        state.status = job.status;
+        state.jobDescription = job.jobDescription;
+        state.salary = job.salary;
+        state.location = job.location;
       })
       .addCase(createJob.rejected, (state, action) => {
         state.isLoading = false;

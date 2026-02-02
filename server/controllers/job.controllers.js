@@ -5,13 +5,24 @@ import moment from "moment";
 export const createJob = async (req, res) => {
   try {
     req.body.createdBy = req.user._id;
-    const { company, role, status, createdBy } = req.body;
+    const {
+      company,
+      role,
+      status,
+      createdBy,
+      jobDescription,
+      location,
+      salary,
+    } = req.body;
 
     const job = await Job.create({
       createdBy,
       company,
       role,
       status,
+      jobDescription,
+      location,
+      salary,
     });
 
     res.status(201).json({
@@ -20,6 +31,7 @@ export const createJob = async (req, res) => {
       job,
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Job creation failed",

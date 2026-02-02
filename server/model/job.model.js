@@ -20,8 +20,35 @@ const jobSchema = new mongoose.Schema(
       enum: ["Applied", "Interview", "Offer", "Rejected"],
       default: "Applied",
     },
+
+    jobDescription: {
+      type: String,
+      default: "",
+    },
+    location: {
+      type: String,
+      default: "Remote", //Remote , hybrid or city
+    },
+    salary: {
+      type: String, // 5LPA - 8LPA
+      default: "Not disclosed",
+    },
+    aiAnalysis: {
+      matchScore: {
+        type: Number,
+        default: 0,
+      },
+      missingKeywords: {
+        type: [String], //["Docker" , "Redis" , "System Design"]
+        default: [],
+      },
+      tips: {
+        type: String,
+        default: "Run AI analysis to get tips",
+      },
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Job = mongoose.model("Job", jobSchema);
