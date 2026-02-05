@@ -2,6 +2,8 @@ import { Button, Card, Container, Row, Col, Badge } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { setEditJob } from "../../features/slices/allJobsSlice";
 import { useNavigate } from "react-router-dom";
+import { analyzeJob } from "../../features/slices/allJobsSlice";
+import { useState } from "react";
 
 const Job = ({
   company,
@@ -20,6 +22,16 @@ const Job = ({
 
   // Safe destructuring with fallbacks
   const { location, salary, jobDescription } = job;
+
+  const [analyzingJob, setAnalyzingJob] = useState(false);
+
+  const handleAnalysis = async (e) => {
+    e.preventDefault();
+    if (!jobDescription) return;
+    setAnalyzingJob(true);
+    await dispatch(analyzeJob(job._id));
+    setAnalyzingJob(false);
+  };
 
   return (
     <Card
@@ -68,6 +80,23 @@ const Job = ({
                 Update
               </Button>
             </Col>
+          </Row>
+          <Row className="mt-2 px-2">
+            {/* Button visibility logic */}
+            {jobDescription && !job.aiAnalysis?.matchscore && (
+              <Button onClick={handleAnalysis}>
+                {" "}
+                {analyzingJob ? "Asking AI..." : "✨ Analyze Match with AI "}
+              </Button>
+            )}
+
+            {/* Results display logic */}
+            {job.aiAnalysis?.matchscore > 0 && (
+              <div className="mt-2 p-2 border rounded bg-light">
+                <strong>Match: {job.aiAnalysis.matchscore}%</strong>
+                <p className="text-muted small mb-0">{job.aiAnalysis.tips}</p>
+              </div>
+            )}
           </Row>
         </Container>
       </Card.Body>

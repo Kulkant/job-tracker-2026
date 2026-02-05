@@ -10,7 +10,7 @@ import { updateUser } from "../../features/slices/userSlice.js";
 const Profile = () => {
   const dispatch = useDispatch();
   const { user, isUpdating, isUpdateSuccess, profileForm } = useSelector(
-    (state) => state.user
+    (state) => state.user,
   );
 
   const [show, setShow] = useState(false);
@@ -58,6 +58,23 @@ const Profile = () => {
               onChange={handleChange}
               name="email"
             />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label className="fw-bold text-primary">
+              Your Resume (Raw Text)
+            </Form.Label>
+            <Form.Control
+              as="textarea"
+              type="email"
+              value={profileForm.resumeText || ""}
+              onChange={handleChange}
+              name="resumeText"
+              placeholder="Paste your full resume text here. The AI will use this to match you with jobs."
+            />
+            <Form.Text className="text-muted">
+              Tip: Open your PDF resume, Ctrl+A, Ctrl+C, and Paste here.
+            </Form.Text>
           </Form.Group>
 
           <Button variant="success" type="submit">

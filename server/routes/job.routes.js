@@ -7,11 +7,13 @@ import {
   updateJob,
 } from "../controllers/job.controllers.js";
 import { protect } from "../middleware/auth.middleware.js";
+import { analyzeJob } from "../controllers/ai.controllers.js";
 
 const router = express.Router();
 
 router.route("/").post(protect, createJob).get(protect, getAllJobs);
 router.route("/:id").patch(protect, updateJob).delete(protect, deleteJob);
 router.route("/stats").get(protect, showStats);
+router.post("/analyze", protect, analyzeJob);
 
 export default router;

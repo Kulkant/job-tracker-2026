@@ -61,6 +61,7 @@ const initialState = {
   profileForm: {
     name: "",
     email: "",
+    resumeText: "",
   },
 };
 
@@ -139,6 +140,7 @@ const userSlice = createSlice({
         state.profileForm = {
           name: action.payload.name,
           email: action.payload.email,
+          resumeText: action.payload.resumeText,
         };
         localStorage.setItem("user", JSON.stringify(action.payload));
         state.isUpdateSuccess = true;

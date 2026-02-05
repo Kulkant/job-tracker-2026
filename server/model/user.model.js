@@ -17,8 +17,13 @@ const userSchema = new mongoose.Schema(
       required: [true, "Password is required"],
       minlength: 6,
     },
+    resumeText: {
+      type: String,
+      default: "",
+    },
   },
-  { timestamps: true }
+
+  { timestamps: true },
 );
 
 const User = mongoose.model("User", userSchema);

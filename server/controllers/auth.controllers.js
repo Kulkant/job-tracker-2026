@@ -94,7 +94,7 @@ export const login = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, resumeText } = req.body;
 
     if (!name || !email) {
       return res
@@ -107,6 +107,7 @@ export const updateUser = async (req, res) => {
       {
         name,
         email,
+        resumeText,
       },
       { new: true },
     );

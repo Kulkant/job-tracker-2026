@@ -15,7 +15,7 @@ export const getAllJobs = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message);
     }
-  }
+  },
 );
 
 export const deleteJob = createAsyncThunk(
@@ -30,7 +30,7 @@ export const deleteJob = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.resposne?.data?.message);
     }
-  }
+  },
 );
 
 export const updateJob = createAsyncThunk(
@@ -45,7 +45,7 @@ export const updateJob = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message);
     }
-  }
+  },
 );
 
 export const getStats = createAsyncThunk(
@@ -60,7 +60,25 @@ export const getStats = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(error?.response?.data?.message);
     }
-  }
+  },
+);
+
+export const analyzeJob = createAsyncThunk(
+  "allJobsSlice/analyzeJob",
+  async (jobId, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await customFetch.post(
+        `/jobs/analyze`,
+        { jobId },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+
+      return res.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data.msg);
+    }
+  },
 );
 
 const allJobsSlice = createSlice({
@@ -124,7 +142,7 @@ const allJobsSlice = createSlice({
       .addCase(updateJob.fulfilled, (state, action) => {
         state.isUpdating = false;
         state.jobs = state.jobs.map((job) =>
-          job._id == action.payload._id ? action.payload : job
+          job._id == action.payload._id ? action.payload : job,
         );
       })
       .addCase(updateJob.rejected, (state, action) => {
@@ -140,6 +158,21 @@ const allJobsSlice = createSlice({
         state.monthlyApplications = action.payload.monthlyApplications;
       })
       .addCase(getStats.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(analyzeJob.pending, (state) => {
+        state.isLoading = true; // This will trigger your "Asking AI..." state
+      })
+      .addCase(analyzeJob.fulfilled, (state, action) => {
+        state.isLoading = false;
+        // Update the specific job in the state with the new analysis
+        const { jobId, analysis } = action.payload;
+        state.jobs = state.jobs.map((job) =>
+          job._id === jobId ? { ...job, aiAnalysis: analysis } : job,
+        );
+      })
+      .addCase(analyzeJob.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

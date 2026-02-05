@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import customFetch from "../../utils/axios";
+import { analyzeJob } from "./allJobsSlice";
 // Create a job
 export const createJob = createAsyncThunk(
   "job/createJob",
