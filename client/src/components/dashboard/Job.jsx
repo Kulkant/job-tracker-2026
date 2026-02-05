@@ -83,7 +83,7 @@ const Job = ({
           </Row>
           <Row className="mt-2 px-2">
             {/* Button visibility logic */}
-            {jobDescription && !job.aiAnalysis?.matchscore && (
+            {jobDescription && !job.aiAnalysis?.matchScore && (
               <Button onClick={handleAnalysis}>
                 {" "}
                 {analyzingJob ? "Asking AI..." : "✨ Analyze Match with AI "}
@@ -91,9 +91,9 @@ const Job = ({
             )}
 
             {/* Results display logic */}
-            {job.aiAnalysis?.matchscore > 0 && (
+            {job.aiAnalysis?.matchScore > 0 && (
               <div className="mt-2 p-2 border rounded bg-light">
-                <strong>Match: {job.aiAnalysis.matchscore}%</strong>
+                <strong>Match: {job.aiAnalysis.matchScore}%</strong>
                 <p className="text-muted small mb-0">{job.aiAnalysis.tips}</p>
               </div>
             )}

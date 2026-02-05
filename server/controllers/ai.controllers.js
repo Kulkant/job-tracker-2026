@@ -23,19 +23,22 @@ export const analyzeJob = async (req, res) => {
     const userResume = user.resumeText || "User has notprovided resume";
 
     const prompt = `
-      Act as an ATS(Applicant Tracking System) expert.
+      Act as an expert Technical Recruiter and ATS (Applicant Tracking System) optimizer.
 
       Job Description: ${job.jobDescription}
 
       Candidate Resume: ${userResume}
 
       TASK:
-      Compare the resume to the job description.
-      Return a JSON object ONLY with the following structure.
+      Analyze the match between the resume and the job description.
+      Identify critical gaps that would cause an automatic rejection.
+      OUTPUT INSTRUCTIONS:
+      Return a JSON object ONLY. No markdown, no explanations outside the JSON.
+      Structure:
       {
-        "matchscore" : (number between 1-100),
-        "missingKeyword": ["array" , "of" , "strings"],
-        tips: "A short , brutal advice what to fix"
+        "matchScore": (integer 0-100),
+        "missingKeywords": ["keyword1", "keyword2", "keyword3"], (List top 5 technical skills found in JD but missing in Resume),
+        "tips": "One specific, actionable sentence on how to improve the resume for this specific role. Mention exactly where to add the missing keywords."
       }
     `;
 
@@ -51,7 +54,6 @@ export const analyzeJob = async (req, res) => {
 
     return res.status(200).json({ success: true, analysis, jobId });
   } catch (error) {
-    console.log(error);
     return res
       .status(500)
       .json({ message: "AI error failed", error: error.message });
